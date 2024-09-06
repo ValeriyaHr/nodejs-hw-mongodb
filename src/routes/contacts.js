@@ -1,15 +1,15 @@
 // src/routers/contacts.js
 
-import { Router } from "express";
+import express from 'express';
+const router = express.Router();
+
 import { getContactsController,
   getContactByIdController,
   createContactController,
-   patchContactController,
-   deleteContactController } from "../controllers/contacts.js";
+  patchContactController,
+  deleteContactController } from "../controllers/contacts.js";
+
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
-
-
-const router = Router();
 
 
 router.get('/contacts', ctrlWrapper(getContactsController));
