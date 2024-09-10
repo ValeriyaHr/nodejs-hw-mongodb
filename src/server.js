@@ -9,7 +9,6 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 
-
 dotenv.config();
 
 const PORT = Number(env('PORT', '3000'));
