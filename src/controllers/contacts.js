@@ -9,7 +9,11 @@ import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res, next) => {
   try {
-    const contacts = await getAllContacts();
+    const contacts = await getAllContacts(  1,
+      10,
+      null,
+      '_id',
+       {});
     res.json({
       status: 200,
       message: 'Successfully found contacts!',

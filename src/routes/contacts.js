@@ -12,7 +12,7 @@ import { getContactsController,
 
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import { createContactSchema, updateContactSchema  } from "../validation/contacts.js";
-///import { validateBody } from "../middlewares/validateBody.js";
+import { validateBody  } from "../middlewares/validateBody.js";
 
 const router = express.Router();
 router.get('/contacts', ctrlWrapper(getContactsController));
