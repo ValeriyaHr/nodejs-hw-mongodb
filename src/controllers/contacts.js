@@ -10,11 +10,11 @@ import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res, next) => {
   try {
-    const { page = 1, perPage = 10, sortBy = '_id', sortOrder = 'asc' } = req.query; // Отримуємо параметри з req.query
-    const filter = {}; // Залишаємо порожній фільтр на випадок додаткової фільтрації
+    const { page = 1, perPage = 10, sortBy = '_id', sortOrder = 'asc' } = req.query;
+    const filter = {}; // Порожній фільтр на випадок додаткової фільтрації
 
     // Викликаємо функцію getAllContacts з правильними параметрами
-    const contacts = await getAllContacts(
+    const { data, totalItems } = await getAllContacts(
       parseInt(page),
       parseInt(perPage),
       sortBy,
@@ -22,10 +22,23 @@ export const getContactsController = async (req, res, next) => {
       filter
     );
 
+    // Обчислення кількості сторінок
+    const totalPages = Math.ceil(totalItems / perPage);
+    const hasPreviousPage = parseInt(page) > 1; // Перевірка, чи є попередня сторінка
+    const hasNextPage = parseInt(page) < totalPages; // Перевірка, чи є наступна сторінка
+
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: contacts,
+      data: {
+        data,
+        page: parseInt(page),
+        perPage: parseInt(perPage),
+        totalItems,
+        totalPages,
+        hasPreviousPage,
+        hasNextPage,
+      },
     });
   } catch (error) {
     next(error);
