@@ -1,3 +1,4 @@
+//src/controllers/contacts.js
 import {
   getAllContacts,
   getContactById,
@@ -9,11 +10,18 @@ import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res, next) => {
   try {
-    const contacts = await getAllContacts(  1,
-      10,
-      null,
-      '_id',
-       {});
+    const { page = 1, perPage = 10, sortBy = '_id', sortOrder = 'asc' } = req.query; // Отримуємо параметри з req.query
+    const filter = {}; // Залишаємо порожній фільтр на випадок додаткової фільтрації
+
+    // Викликаємо функцію getAllContacts з правильними параметрами
+    const contacts = await getAllContacts(
+      parseInt(page),
+      parseInt(perPage),
+      sortBy,
+      sortOrder,
+      filter
+    );
+
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
