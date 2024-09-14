@@ -3,13 +3,13 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from "../constants/index.js";
 
 // Отримати всі контакти
-export const getAllContacts = async ({
+export const getAllContacts = async (
   page = 1,
   perPage = 10,
-  sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
+  sortOrder = SORT_ORDER.ASC,
   filter = {},
-}) => {
+) => {
 
   const limit = perPage;
   const skip = (page - 1) * perPage;
