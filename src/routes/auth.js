@@ -1,34 +1,36 @@
+//src/routers/auth.js:
+
 import { Router } from 'express';
 
-import validateBody from '../middlewares/validateBody.js';
+import { validateBody } from '../middlewares/validateBody.js';
 import authSchema from '../validation/authSchema.js';
 import loginUserSchema from '../validation/loginUserSchema.js';
 
 import {
-  rigesterUserController,
+  registerUserController,
   loginUserController,
   logoutUserController,
   refreshUsersSession,
 } from '../controllers/auth.js';
 
-import ctrlWrapper from '../utils/ctrlWrapper.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
-const router = Router();
+const authrouter = Router();
 
-router.post(
-  '/auth/register',
+authrouter.post(
+  '/register',
   validateBody(authSchema),
-  ctrlWrapper(rigesterUserController),
+  ctrlWrapper(registerUserController),
 );
 
-router.post(
-  '/auth/login',
+authrouter.post(
+  '/login',
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
 
-router.post('/auth/logout', ctrlWrapper(logoutUserController));
+authrouter.post('/logout', ctrlWrapper(logoutUserController));
 
-router.post('/auth/refresh', ctrlWrapper(refreshUsersSession));
+authrouter.post('/refresh', ctrlWrapper(refreshUsersSession));
 
-export default router;
+export default authrouter;
