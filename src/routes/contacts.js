@@ -15,10 +15,10 @@ import isValidId from '../middlewares/isValidId.js';
 
 const router = express.Router();
 
-router.get('/contacts', ctrlWrapper(getContactsController));
-router.get('/contacts/:contactId', isValidId, ctrlWrapper(getContactByIdController));
-router.post('/contacts', validateBody(createContactSchema), ctrlWrapper(createContactController));
-router.patch('/contacts/:contactId', isValidId, validateBody(updateContactSchema), ctrlWrapper(patchContactController));
-router.delete('/contacts/:contactId', isValidId, ctrlWrapper(deleteContactController));
+router.get('/', ctrlWrapper(getContactsController)); // Отримати всі контакти
+router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController)); // Отримати контакт за ID
+router.post('/', validateBody(createContactSchema), ctrlWrapper(createContactController)); // Створити контакт
+router.patch('/:contactId', isValidId, validateBody(updateContactSchema), ctrlWrapper(patchContactController)); // Оновити контакт
+router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController)); // Видалити контакт
 
 export default router;
