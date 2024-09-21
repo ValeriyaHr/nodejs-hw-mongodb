@@ -7,15 +7,17 @@ import {
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
+// Отримати всі контакти для авторизованого користувача
 export const getContactsController = async (req, res, next) => {
   try {
-    const { _id: userId } = req.user;
+    const { _id: userId } = req.user;  // Витягуємо userId з авторизованого користувача
 
     const { page = 1, perPage = 10, sortBy = '_id', sortOrder = 'asc' } = req.query;
 
-    const filter = { userId };
+    const filter = { userId };  // Фільтр за userId
 
     const { data, totalItems } = await getAllContacts(
+      userId,  // Передаємо userId
       parseInt(page),
       parseInt(perPage),
       sortBy,
@@ -45,13 +47,14 @@ export const getContactsController = async (req, res, next) => {
   }
 };
 
+// Отримати контакт за ID для авторизованого користувача
 export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
   try {
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(userId, contactId);  // Передаємо userId
 
-    if (!contact || contact.userId.toString() !== userId.toString()) {
+    if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
 
@@ -65,6 +68,7 @@ export const getContactByIdController = async (req, res, next) => {
   }
 };
 
+// Створити новий контакт для авторизованого користувача
 export const createContactController = async (req, res, next) => {
   const { name, phoneNumber } = req.body;
   const { _id: userId } = req.user;
@@ -80,7 +84,7 @@ export const createContactController = async (req, res, next) => {
   }
 
   try {
-    const contact = await createContact({ ...req.body, userId });
+    const contact = await createContact(userId, req.body);  // Передаємо userId
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
@@ -91,17 +95,18 @@ export const createContactController = async (req, res, next) => {
   }
 };
 
+// Оновити контакт для авторизованого користувача
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
   try {
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(userId, contactId);  // Передаємо userId
 
-    if (!contact || contact.userId.toString() !== userId.toString()) {
+    if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
 
-    const updatedContact = await updateContact(contactId, req.body);
+    const updatedContact = await updateContact(userId, contactId, req.body);  // Передаємо userId
 
     res.json({
       status: 200,
@@ -113,17 +118,18 @@ export const patchContactController = async (req, res, next) => {
   }
 };
 
+// Видалити контакт для авторизованого користувача
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
   try {
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(userId, contactId);  // Передаємо userId
 
-    if (!contact || contact.userId.toString() !== userId.toString()) {
+    if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
 
-    await deleteContact(contactId);
+    await deleteContact(userId, contactId);  // Передаємо userId
 
     res.status(204).send();
   } catch (error) {

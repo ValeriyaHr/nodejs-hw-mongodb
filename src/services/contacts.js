@@ -2,25 +2,25 @@ import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from "../constants/index.js";
 
-// Отримати всі контакти
+// Отримати всі контакти авторизованого користувача
 export const getAllContacts = async (
+  userId, // Додаємо userId для фільтрації контактів
   page = 1,
   perPage = 10,
   sortBy = '_id',
   sortOrder = SORT_ORDER.ASC,
   filter = {},
 ) => {
-
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find();
+  const contactsQuery = ContactsCollection.find({ userId }); // Фільтр для отримання контактів тільки для користувача
 
-  if (filter && filter.contactType) {
+  if (filter.contactType) {
     contactsQuery.where('contactType').equals(filter.contactType);
   }
 
-  if (filter && filter.isFavourite !== undefined) {
+  if (filter.isFavourite !== undefined) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
@@ -46,20 +46,20 @@ export const getAllContacts = async (
   }
 };
 
-// Отримати контакт за ID
-export const getContactById = async (contactId) => {
+// Отримати контакт за ID для авторизованого користувача
+export const getContactById = async (userId, contactId) => {
   try {
-    return await ContactsCollection.findById(contactId);
+    return await ContactsCollection.findOne({ _id: contactId, userId }); // Фільтрація по userId
   } catch (error) {
     console.error('Error fetching contact by ID:', error);
     throw new Error('Failed to fetch contact by ID');
   }
 };
 
-// Створити новий контакт
-export const createContact = async (payload) => {
+// Створити новий контакт для авторизованого користувача
+export const createContact = async (userId, payload) => {
   try {
-    const contact = await ContactsCollection.create(payload);
+    const contact = await ContactsCollection.create({ ...payload, userId }); // Додаємо userId
     return contact;
   } catch (error) {
     console.error('Error creating contact:', error);
@@ -67,13 +67,17 @@ export const createContact = async (payload) => {
   }
 };
 
-// Оновити контакт за ID
-export const updateContact = async (contactId, payload, options = {}) => {
+// Оновити контакт за ID для авторизованого користувача
+export const updateContact = async (userId, contactId, payload, options = {}) => {
   try {
-    const contact = await ContactsCollection.findByIdAndUpdate(contactId, payload, {
-      new: true,
-      ...options,
-    });
+    const contact = await ContactsCollection.findOneAndUpdate(
+      { _id: contactId, userId }, // Фільтр по userId
+      payload,
+      {
+        new: true,
+        ...options,
+      }
+    );
     return contact;
   } catch (error) {
     console.error('Error updating contact:', error);
@@ -81,10 +85,10 @@ export const updateContact = async (contactId, payload, options = {}) => {
   }
 };
 
-// Видалити контакт за ID
-export const deleteContact = async (contactId) => {
+// Видалити контакт за ID для авторизованого користувача
+export const deleteContact = async (userId, contactId) => {
   try {
-    const contact = await ContactsCollection.findByIdAndDelete(contactId);
+    const contact = await ContactsCollection.findOneAndDelete({ _id: contactId, userId }); // Фільтр по userId
     return contact;
   } catch (error) {
     console.error('Error deleting contact:', error);
