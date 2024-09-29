@@ -66,6 +66,7 @@ export const refreshUsersSession = async (req, res, next) => {
     const { sessionId, refreshToken } = req.cookies;
 
     if (!sessionId || !refreshToken) {
+
       throw createHttpError(400, 'Missing sessionId or refreshToken in cookies');
     }
 

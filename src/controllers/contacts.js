@@ -72,21 +72,11 @@ export const getContactByIdController = async (req, res, next) => {
 
 // Створити новий контакт для авторизованого користувача
 export const createContactController = async (req, res, next) => {
-  const { name, phoneNumber } = req.body;
   const { _id: userId } = req.user;
 
-  if (!name || !phoneNumber) {
-    const missingFields = [];
-    if (!name) missingFields.push('name');
-    if (!phoneNumber) missingFields.push('phoneNumber');
-
-    return next(
-      createHttpError(400, `Missing required fields: ${missingFields.join(', ')}`)
-    );
-  }
-
   try {
-    const contact = await createContact(userId, req.body);  // Передаємо userId
+    const contact = await createContact(userId, req.body);
+
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
@@ -101,14 +91,15 @@ export const createContactController = async (req, res, next) => {
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
+
   try {
-    const contact = await getContactById(userId, contactId);  // Передаємо userId
+    const contact = await getContactById(userId, contactId);
 
     if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
 
-    const updatedContact = await updateContact(userId, contactId, req.body);  // Передаємо userId
+    const updatedContact = await updateContact(userId, contactId, req.body);
 
     res.json({
       status: 200,
@@ -119,6 +110,7 @@ export const patchContactController = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // Видалити контакт для авторизованого користувача
 export const deleteContactController = async (req, res, next) => {
