@@ -1,5 +1,4 @@
-//src/controllers/contacts.js
-
+import mongoose from 'mongoose';
 import {
   getAllContacts,
   getContactById,
@@ -70,36 +69,66 @@ export const getContactByIdController = async (req, res, next) => {
   }
 };
 
-// Створити новий контакт для авторизованого користувача
+
+// Створити новий контакт для авторизованого користувача з підтримкою завантаження фото
 export const createContactController = async (req, res, next) => {
   const { _id: userId } = req.user;
 
   try {
-    const contact = await createContact(userId, req.body);
+    console.log('File data:', req.file);
+    console.log('Request body:', req.body);
 
+    const photo = req.file ? req.file.path : null;
+    console.log('Photo path:', photo);
+
+    // Перевірка на ObjectId для userId
+    const verifiedUserId = mongoose.Types.ObjectId.isValid(userId)
+      ? userId
+      : mongoose.Types.ObjectId(userId);
+    console.log('Verified userId:', verifiedUserId); // Логування після перевірки
+
+    // Перевірка обов'язкових полів
+    if (!req.body.name || !req.body.phoneNumber) {
+      throw createHttpError(400, 'Name and phone number are required');
+    }
+
+    const contactData = {
+      ...req.body,
+      userId: verifiedUserId, // використовуємо перевірений userId
+      isFavourite: req.body.isFavourite === 'true', // булевий тип
+      photo,
+    };
+
+    console.log('Contact data:', contactData);
+
+    const contact = await createContact(contactData);
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
       data: contact,
     });
   } catch (error) {
-    next(error);
+    console.error('Error in createContactController:', error.stack); // Детальний лог
+    next(createHttpError(500, 'Failed to create contact'));
   }
 };
 
-// Оновити контакт для авторизованого користувача
+// Оновити контакт для авторизованого користувача з підтримкою оновлення фото
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
 
   try {
     const contact = await getContactById(userId, contactId);
-
     if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
 
-    const updatedContact = await updateContact(userId, contactId, req.body);
+    const photo = req.file ? req.file.path : contact.photo;  // Залишаємо старе фото, якщо нове не передано
+    const updatedContact = await updateContact(userId, contactId, {
+      ...req.body,
+      photo,  // Оновлюємо фото
+    });
 
     res.json({
       status: 200,

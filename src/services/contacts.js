@@ -1,5 +1,5 @@
 //src/services/contacts.js
-
+import mongoose from 'mongoose';
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from "../constants/index.js";
@@ -59,15 +59,22 @@ export const getContactById = async (userId, contactId) => {
 };
 
 // Створити новий контакт для авторизованого користувача
-export const createContact = async (userId, payload) => {
+export const createContact = async (contactData) => {
   try {
-    const contact = await ContactsCollection.create({ ...payload, userId }); // Додаємо userId
+    // Перевіряємо, чи userId є ObjectId
+    if (!mongoose.Types.ObjectId.isValid(contactData.userId)) {
+      throw createHttpError(400, 'Invalid userId');
+    }
+
+    const contact = new ContactsCollection(contactData);
+    await contact.save();
     return contact;
   } catch (error) {
-    console.error('Error creating contact:', error);
-    throw new Error('Failed to create contact');
+    console.error('Error in createContact service:', error.stack); // Детальний лог
+    throw error;
   }
 };
+
 
 // Оновити контакт за ID для авторизованого користувача
 export const updateContact = async (userId, contactId, payload, options = {}) => {

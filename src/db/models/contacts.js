@@ -4,15 +4,14 @@ const contactsSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'Name is required'],
     },
     phoneNumber: {
       type: String,
-      required: true,
+      required: [true, 'Phone number is required'],
     },
     email: {
       type: String,
-      required: false,
     },
     isFavourite: {
       type: Boolean,
@@ -27,7 +26,7 @@ const contactsSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'users',
-      required: true,
+      required: [true, 'User ID is required'],
     },
   },
   {

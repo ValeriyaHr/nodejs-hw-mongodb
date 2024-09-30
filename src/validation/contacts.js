@@ -8,6 +8,7 @@ export const createContactSchema = Joi.object({
     email: Joi.string().min(3).max(50).email(),
     isFavourite: Joi.boolean(),
     contactType: Joi.string().valid('work', 'home', 'personal'),
+    photo: Joi.any(),
   });
 
 
@@ -18,4 +19,5 @@ export const createContactSchema = Joi.object({
     email: Joi.string().min(3).max(50).email(),
     isFavourite: Joi.boolean(),
     contactType: Joi.string().valid('work', 'home', 'personal'),
+    photo: Joi.any(),
   });
