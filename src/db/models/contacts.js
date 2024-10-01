@@ -28,6 +28,9 @@ const contactsSchema = new Schema(
       ref: 'users',
       required: [true, 'User ID is required'],
     },
+    photo: {
+      type: String,  // Додаємо поле для URL зображення
+    },
   },
   {
     timestamps: true,
