@@ -14,7 +14,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './docs/swagger.json' assert { type: 'json' };
+import swaggerDocument from '../docs/swagger.json';
 
 dotenv.config();
 
