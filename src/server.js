@@ -13,6 +13,9 @@ import authRouter from './routes/auth.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './docs/swagger.json' assert { type: 'json' };
+
 dotenv.config();
 
 const PORT = Number(env('PORT', '3000'));
@@ -44,4 +47,6 @@ export const setupServer = () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 export default setupServer;

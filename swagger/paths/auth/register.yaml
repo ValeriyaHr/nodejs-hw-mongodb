@@ -1,0 +1,48 @@
+#/swagger/paths/auth/register.yaml
+tags:
+  - Auth
+summary: Register a new user
+operationId: registerUser
+description: Register a new user with name, email, and password
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - name
+          - email
+          - password
+        properties:
+          name:
+            type: string
+            minLength: 3
+            maxLength: 20
+            example: 'John Doe'
+          email:
+            type: string
+            format: email
+            example: 'john.doe@example.com'
+          password:
+            type: string
+            minLength: 3
+            maxLength: 20
+            example: 'password123'
+responses:
+  '201':
+    description: User registered successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: User registered successfully
+            data:
+              $ref: '../../components/schemas/user.yaml'
+  '400':
+    $ref: '../../components/responses/400.yaml'

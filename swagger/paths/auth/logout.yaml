@@ -1,0 +1,25 @@
+#/swagger/paths/auth/logout.yaml
+
+tags:
+  - Auth
+summary: Logout a user
+operationId: logoutUser
+description: Logout the currently logged in user
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: User logged out successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: User logged out successfully
+  '400':
+    $ref: '../../components/responses/400.yaml'

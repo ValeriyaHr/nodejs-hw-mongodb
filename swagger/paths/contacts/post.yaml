@@ -1,0 +1,77 @@
+#/swagger/paths/contacts/post.yaml
+
+tags:
+  - Contacts
+summary: Create contact
+operationId: createContact
+description: 'Create a contact with payload'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - firstName
+          - lastName
+          - email
+          - phone
+        properties:
+          firstName:
+            description: "Contact's first name"
+            type: string
+            example: 'John'
+          lastName:
+            description: "Contact's last name"
+            type: string
+            example: 'Doe'
+          email:
+            description: "Contact's email address"
+            type: string
+            format: email
+            example: 'john.doe@example.com'
+          phone:
+            description: "Contact's phone number"
+            type: string
+            example: '+1234567890'
+          isFavourite:
+            description: "Whether the contact is a favourite"
+            type: boolean
+            example: true
+          contactType:
+            description: "Type of contact"
+            type: string
+            enum: ['work', 'home', 'personal']
+            example: 'personal'
+          userId:
+            description: "ID of the user who owns the contact"
+            type: string
+            example: 60d21b4967d0d8992e610c86
+          photo:
+            description: "Contact's photo"
+            type: string
+            format: binary
+responses:
+  '201':
+    description: Creates a contact
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created a contact!
+            data:
+              type: object
+              $ref: '../../components/schemas/contact.yaml'
+  '404':
+    $ref: '../../components/responses/404.yaml'

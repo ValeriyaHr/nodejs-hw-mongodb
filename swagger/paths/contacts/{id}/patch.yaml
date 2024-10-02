@@ -1,0 +1,77 @@
+tags:
+  - Contacts
+summary: Update contact
+operationId: updateContact
+description: 'Update a contact with payload'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: contactId
+    required: true
+    schema:
+      type: string
+    description: ID of the contact to update
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          firstName:
+            description: "Contact's first name"
+            type: string
+            example: 'John'
+          lastName:
+            description: "Contact's last name"
+            type: string
+            example: 'Doe'
+          email:
+            description: "Contact's email address"
+            type: string
+            format: email
+            example: 'john.doe@example.com'
+          phone:
+            description: "Contact's phone number"
+            type: string
+            example: '+1234567890'
+          isFavourite:
+            description: "Whether the contact is a favourite"
+            type: boolean
+            example: true
+          contactType:
+            description: "Type of contact"
+            type: string
+            enum: ['work', 'home', 'personal']
+            example: 'personal'
+          userId:
+            description: "ID of the user who owns the contact"
+            type: string
+            example: 60d21b4967d0d8992e610c86
+          photo:
+            description: "Contact's photo"
+            type: string
+            format: binary
+responses:
+  '200':
+    description: Updates a contact
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully updated the contact!
+            data:
+              type: object
+              $ref: '../../../components/schemas/contact.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'

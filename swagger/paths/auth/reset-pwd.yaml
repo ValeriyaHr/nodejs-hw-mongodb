@@ -1,0 +1,38 @@
+#/swagger/paths/auth/reset-pwd.yaml
+
+tags:
+  - Auth
+summary: Reset password
+operationId: resetPassword
+description: Reset the user password using the token
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - password
+          - token
+        properties:
+          password:
+            type: string
+            example: 'newPassword123'
+          token:
+            type: string
+            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+responses:
+  '200':
+    description: Password reset successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Password reset successfully
+  '400':
+    $ref: '../../components/responses/400.yaml'
